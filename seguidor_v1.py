@@ -11,7 +11,6 @@ from time import *
 
 #inicializa las conecciones a los motores y sensores del ev3
 def enciende_ev3():
-
     #conectamos el push button
     apagador = TouchSensor()
     assert apagador.connected
@@ -33,7 +32,7 @@ def enciende_ev3():
     ojo_med.mode = 'COL-REFLECT'
 
 #activa la recoleccion de datos en el recorrido
-def recolecta():
+def inicia_recolecta():
     f = open("data.txt", "w+")
 
 #escribe los datos de este ciclo del loop
@@ -56,29 +55,39 @@ def apaga_ev3():
 
 #main loop de ejecucion
 def run():
-    #muy pasado de izq, ve a la derecha
-    if ojo_izq < 10: 
-        motor_der.run_forever(speed_sp = 10)
-        motor_izq.run_forever(speed_sp = 50)
-    #muy pasado de der, ve a la izquierda
-    elif ojo_der < 10: 
-        motor_der.run_forever(speed_sp = 50)
-        motor_izq.run_forever(speed_sp = 10)
-    #un poco pasado de izq, ve a la derecha
-    elif ojo_izq < 30: 
-        motor_der.run_forever(speed_sp = 30)
-        motor_izq.run_forever(speed_sp = 50)
-    #un poco pasado de der, ve a la izquierda
-    elif ojo_der < 10: 
-        motor_der.run_forever(speed_sp = 50)
-        motor_izq.run_forever(speed_sp = 30)
-    #llegó a la meta parale
-    elif ojo_izq < 10 and ojo_der < 10 and ojo_med <10
-        apaga_ev3()
-    #esta perfecto siguele    
-    elif 
-        motor_der.run_forever(speed_sp = 50)
-        motor_izq.run_forever(speed_sp = 50)
+    #mientras que no se aprete el boton de stop, corre
+    while not apagador.value():
+        #muy pasado de izq, ve a la derecha
+        if ojo_izq < 10: 
+            motor_der.run_forever(speed_sp = 10)
+            motor_izq.run_forever(speed_sp = 50)
+        #muy pasado de der, ve a la izquierda
+        elif ojo_der < 10: 
+            motor_der.run_forever(speed_sp = 50)
+            motor_izq.run_forever(speed_sp = 10)
+        #un poco pasado de izq, ve a la derecha
+        elif ojo_izq < 30: 
+            motor_der.run_forever(speed_sp = 30)
+            motor_izq.run_forever(speed_sp = 50)
+        #un poco pasado de der, ve a la izquierda
+        elif ojo_der < 10: 
+            motor_der.run_forever(speed_sp = 50)
+            motor_izq.run_forever(speed_sp = 30)
+        #llegó a la meta parale
+        elif ojo_izq < 10 and ojo_der < 10 and ojo_med <10
+            apaga_ev3()
+        #esta perfecto siguele    
+        elif 
+            motor_der.run_forever(speed_sp = 50)
+            motor_izq.run_forever(speed_sp = 50)
 
-    #ya acabaste un loop cycle, escribe tus datos
-    
+        #ya acabaste un loop cycle, escribe tus datos
+        anota()
+        #epoch, atrasa el ciclo para que los motores tengan tiempo de reaccionar
+        sleep(0.2)
+
+#main
+enciende_ev3()
+inicia_recolecta()
+run()
+termina_recolecta()
