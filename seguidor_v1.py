@@ -43,3 +43,32 @@ def termina_recolecta():
 def apaga_ev3():
     motor_izq.stop()
     motor_der.stop()
+
+#main loop de ejecucion
+def run():
+    #muy pasado de izq, ve a la derecha
+    if ojo_izq < 10: 
+        motor_der.run_forever(speed_sp = 10)
+        motor_izq.run_forever(speed_sp = 50)
+    #muy pasado de der, ve a la izquierda
+    elif ojo_der < 10: 
+        motor_der.run_forever(speed_sp = 50)
+        motor_izq.run_forever(speed_sp = 10)
+    #un poco pasado de izq, ve a la derecha
+    elif ojo_izq < 30: 
+        motor_der.run_forever(speed_sp = 30)
+        motor_izq.run_forever(speed_sp = 50)
+    #un poco pasado de der, ve a la izquierda
+    elif ojo_der < 10: 
+        motor_der.run_forever(speed_sp = 50)
+        motor_izq.run_forever(speed_sp = 30)
+    #llegó a la meta parale
+    elif ojo_izq < 10 and ojo_der < 10 and ojo_med <10
+        apaga_ev3()
+    #esta perfecto siguele    
+    elif 
+        motor_der.run_forever(speed_sp = 50)
+        motor_izq.run_forever(speed_sp = 50)
+
+    #ya acabaste un loop cycle, escribe tus datos
+    
