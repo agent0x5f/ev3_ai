@@ -35,6 +35,16 @@ def enciende_ev3():
 #activa la recoleccion de datos en el recorrido
 def recolecta():
     f = open("data.txt", "w+")
+
+#escribe los datos de este ciclo del loop
+def anota():
+    f.write(str(ojo_izq.value()) + "," +
+            str(ojo_der.value()) + "," +
+            str(ojo_med.value()) + "," +
+            str(motor_izq.speed()) + "," +
+            str(motor_der.speed()) + "\n+
+    )
+
 #termina la recoleccion de datos en el recorrido
 def termina_recolecta():
     f.close()
