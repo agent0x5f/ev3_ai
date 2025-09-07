@@ -4,20 +4,20 @@ Algoritmo para segidor de linea
 Se detiene cuando llega a la meta o pasa un tiempo determinado
 Genera un csv que contiene los datos de los sensores
 """
-
 #Importamos las librerias
 from ev3dev2.auto import *
 from time import *
+apagado = False
 
 #inicializa las conecciones a los motores y sensores del ev3
 def enciende_ev3():
     #conectamos el push button
-    apagador = TouchSensor()
-    assert apagador.connected
+    boton = TouchSensor()
+    assert boton.connected
     #conectamos los motores
-    motor_izq = LargeMotor(OUTPUT A)
+    motor_izq = LargeMotor(OUTPUT_A)
     assert motor_izq.connected
-    motor_der = LargeMotor(OUTPUT B)
+    motor_der = LargeMotor(OUTPUT_B)
     assert motor_der.connected
     #conectamos los sensores de color
     ojo_izq = ColorSensor('in1')
@@ -44,6 +44,11 @@ def anota():
             str(motor_der.speed()) + "\n+
     )
 
+#apaga el ev3 si se apreta el boton
+def apagador():
+    if boton.is_pressed == True:
+        apagado = True
+
 #termina la recoleccion de datos en el recorrido
 def termina_recolecta():
     f.close()
@@ -56,7 +61,7 @@ def apaga_ev3():
 #main loop de ejecucion
 def run():
     #mientras que no se aprete el boton de stop, corre
-    while not apagador.value():
+    while apagado == False
         #muy pasado de izq, ve a la derecha
         if ojo_izq < 10: 
             motor_der.run_forever(speed_sp = 10)
@@ -74,17 +79,19 @@ def run():
             motor_der.run_forever(speed_sp = 50)
             motor_izq.run_forever(speed_sp = 30)
         #llegó a la meta parale
-        elif ojo_izq < 10 and ojo_der < 10 and ojo_med <10
+        elif ojo_izq < 10 and ojo_der < 10 and ojo_med <10:
             apaga_ev3()
+            break
         #esta perfecto siguele    
         elif 
             motor_der.run_forever(speed_sp = 50)
             motor_izq.run_forever(speed_sp = 50)
-
         #ya acabaste un loop cycle, escribe tus datos
         anota()
         #epoch, atrasa el ciclo para que los motores tengan tiempo de reaccionar
         sleep(0.2)
+        #Ya corrió almenos un ciclo, revisa si hay apagado manual
+        apagador()
 
 #main
 enciende_ev3()
