@@ -31,4 +31,15 @@ def enciende_ev3():
     ojo_izq.mode = 'COL-REFLECT'
     ojo_der.mode = 'COL-REFLECT'
     ojo_med.mode = 'COL-REFLECT'
-    
+
+#activa la recoleccion de datos en el recorrido
+def recolecta():
+    f = open("data.txt", "w+")
+#termina la recoleccion de datos en el recorrido
+def termina_recolecta():
+    f.close()
+
+#detiene los motores
+def apaga_ev3():
+    motor_izq.stop()
+    motor_der.stop()
