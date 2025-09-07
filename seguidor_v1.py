@@ -7,7 +7,7 @@ Genera un csv que contiene los datos de los sensores
 #Importamos las librerias
 from ev3dev2.auto import *
 from time import *
-apagado = False
+apagado = False #detiene el ev3 cuando True
 
 #inicializa las conecciones a los motores y sensores del ev3
 def enciende_ev3():
@@ -30,6 +30,8 @@ def enciende_ev3():
     ojo_izq.mode = 'COL-REFLECT'
     ojo_der.mode = 'COL-REFLECT'
     ojo_med.mode = 'COL-REFLECT'
+    #empieza a contar el tiempo de ejecucion
+    tiempo_inicio = time.perf_counter()
 
 #activa la recoleccion de datos en el recorrido
 def inicia_recolecta():
@@ -60,8 +62,12 @@ def apaga_ev3():
 
 #main loop de ejecucion
 def run():
+    #tiempo actual
+    tiempo_actual = time.perf_counter()
+    #tiempo transcurrido
+    tiempo_ejecucion = tiempo_actual-tiempo_inicio
     #mientras que no se aprete el boton de stop, corre
-    while apagado == False
+    while apagado == False or tiempo_ejecucion < 10:
         #muy pasado de izq, ve a la derecha
         if ojo_izq < 10: 
             motor_der.run_forever(speed_sp = 10)
