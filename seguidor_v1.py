@@ -59,7 +59,7 @@ def termina_recolecta():
 def apaga_ev3():
     motor_izq.stop()
     motor_der.stop()
-
+#test
 #main loop de ejecucion
 def run():
     #tiempo actual
