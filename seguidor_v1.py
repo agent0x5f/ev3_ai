@@ -49,7 +49,7 @@ def anota():
 #apaga el ev3 si se apreta el boton
 def apagador():
 #    if boton.is_pressed == True:
-    #    apagado = True
+    apagado = False
 
 #termina la recoleccion de datos en el recorrido
 def termina_recolecta():
