@@ -38,9 +38,17 @@ tiempo_inicio = time.perf_counter()
 
 #escribe los datos de este ciclo del loop
 def anota():
-    f.write(str(ojo_izq.value()) + "," +
-            str(ojo_der.value()) + "," +
+    printf(str(ojo_izq.value()) + "," +
             str(ojo_med.value()) + "," +
+            str(ojo_der.value()) + "," +
+            str(motor_izq.speed) + "," +
+            str(motor_der.speed) + "\n"
+    )
+
+
+    f.write(str(ojo_izq.value()) + "," +
+            str(ojo_med.value()) + "," +
+            str(ojo_der.value()) + "," +
             str(motor_izq.speed) + "," +
             str(motor_der.speed) + "\n"
     )
@@ -68,18 +76,22 @@ def run():
     while apagado == False or tiempo_ejecucion < 10:
         #muy pasado de izq, ve a la derecha
         if ojo_izq < 10: 
+            printf("gira duro a der")
             motor_der.run_forever(speed_sp = 10)
             motor_izq.run_forever(speed_sp = 50)
         #muy pasado de der, ve a la izquierda
         elif ojo_der < 10: 
+            printf("gira duro izq")
             motor_der.run_forever(speed_sp = 50)
             motor_izq.run_forever(speed_sp = 10)
         #un poco pasado de izq, ve a la derecha
         elif ojo_izq < 30: 
+            printf("gira der")
             motor_der.run_forever(speed_sp = 30)
             motor_izq.run_forever(speed_sp = 50)
         #un poco pasado de der, ve a la izquierda
         elif ojo_der < 10: 
+            printf("gira izq")
             motor_der.run_forever(speed_sp = 50)
             motor_izq.run_forever(speed_sp = 30)
         #llegó a la meta parale
@@ -88,12 +100,13 @@ def run():
             break
         #esta perfecto siguele    
         else: 
+            printf("OK")
             motor_der.run_forever(speed_sp = 50)
             motor_izq.run_forever(speed_sp = 50)
         #ya acabaste un loop cycle, escribe tus datos
         anota()
         #epoch, atrasa el ciclo para que los motores tengan tiempo de reaccionar
-        sleep(0.2)
+        sleep(0.1)
         #Ya corrió almenos un ciclo, revisa si hay apagado manual
         apagador()
 
