@@ -9,7 +9,7 @@ from ev3dev2.auto import *
 from time import perf_counter, sleep
 apagado = False #detiene el ev3 cuando True
 tiempo_inicio = 0
-f = ""
+  f = open("data.txt", "w+")
 #inicializa las conecciones a los motores y sensores del ev3
     #conectamos el push button
 #    boton = TouchSensor()
@@ -34,8 +34,7 @@ ojo_med.mode = 'COL-REFLECT'
 tiempo_inicio = time.perf_counter()
 
 #activa la recoleccion de datos en el recorrido
-def inicia_recolecta():
-    f = open("data.txt", "w+")
+  
 
 #escribe los datos de este ciclo del loop
 def anota():
