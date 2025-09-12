@@ -9,7 +9,7 @@ from ev3dev2.auto import *
 from time import perf_counter, sleep
 apagado = False #detiene el ev3 cuando True
 tiempo_inicio = 0
-
+f = NULL
 #inicializa las conecciones a los motores y sensores del ev3
     #conectamos el push button
 #    boton = TouchSensor()
