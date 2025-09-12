@@ -16,16 +16,16 @@ def enciende_ev3():
 #    assert boton.connected
     #conectamos los motores
     motor_izq = LargeMotor(OUTPUT_D)
-    assert motor_izq.connected
+    #assert motor_izq.connected
     motor_der = LargeMotor(OUTPUT_A)
-    assert motor_der.connected
+    #assert motor_der.connected
     #conectamos los sensores de color
     ojo_izq = ColorSensor('in3')
-    assert ojo_izq.connected
+    #assert ojo_izq.connected
     ojo_med = ColorSensor('in2')
-    assert ojo_med.connected
+    #assert ojo_med.connected
     ojo_der = ColorSensor('in1')
-    assert ojo_der.connected
+    #assert ojo_der.connected
     #cambiamos el modo del sensor de color
     ojo_izq.mode = 'COL-REFLECT'
     ojo_der.mode = 'COL-REFLECT'
