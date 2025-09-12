@@ -38,7 +38,7 @@ tiempo_inicio = time.perf_counter()
 
 #escribe los datos de este ciclo del loop
 def anota():
-    printf(str(ojo_izq.value()) + "," +
+    print(str(ojo_izq.value()) + "," +
             str(ojo_med.value()) + "," +
             str(ojo_der.value()) + "," +
             str(motor_izq.speed) + "," +
@@ -76,22 +76,22 @@ def run():
     while apagado == False or tiempo_ejecucion < 10:
         #muy pasado de izq, ve a la derecha
         if ojo_izq < 10: 
-            printf("gira duro a der")
+            print("gira duro a der")
             motor_der.run_forever(speed_sp = 10)
             motor_izq.run_forever(speed_sp = 50)
         #muy pasado de der, ve a la izquierda
         elif ojo_der < 10: 
-            printf("gira duro izq")
+            print("gira duro izq")
             motor_der.run_forever(speed_sp = 50)
             motor_izq.run_forever(speed_sp = 10)
         #un poco pasado de izq, ve a la derecha
         elif ojo_izq < 30: 
-            printf("gira der")
+            print("gira der")
             motor_der.run_forever(speed_sp = 30)
             motor_izq.run_forever(speed_sp = 50)
         #un poco pasado de der, ve a la izquierda
         elif ojo_der < 10: 
-            printf("gira izq")
+            print("gira izq")
             motor_der.run_forever(speed_sp = 50)
             motor_izq.run_forever(speed_sp = 30)
         #llegó a la meta parale
@@ -100,7 +100,7 @@ def run():
             break
         #esta perfecto siguele    
         else: 
-            printf("OK")
+            print("OK")
             motor_der.run_forever(speed_sp = 50)
             motor_izq.run_forever(speed_sp = 50)
         #ya acabaste un loop cycle, escribe tus datos
