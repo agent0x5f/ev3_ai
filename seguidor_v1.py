@@ -43,7 +43,7 @@ def anota():
             str(ojo_der.value()) + "," +
             str(ojo_med.value()) + "," +
             str(motor_izq.speed()) + "," +
-            str(motor_der.speed()) + "\n+
+            str(motor_der.speed()) + "\n"
     )
 
 #apaga el ev3 si se apreta el boton
@@ -89,7 +89,7 @@ def run():
             apaga_ev3()
             break
         #esta perfecto siguele    
-        elif 
+        else: 
             motor_der.run_forever(speed_sp = 50)
             motor_izq.run_forever(speed_sp = 50)
         #ya acabaste un loop cycle, escribe tus datos
