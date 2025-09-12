@@ -51,9 +51,8 @@ def apagador():
     apagado = False
 
 #termina la recoleccion de datos en el recorrido
-def termina_recolecta():
-    f.close()
-
+#def termina_recolecta():
+ 
 #detiene los motores
 def apaga_ev3():
     motor_izq.stop()
@@ -99,6 +98,5 @@ def run():
         apagador()
 
 #main
-inicia_recolecta()
 run()
-termina_recolecta()
+   f.close()
