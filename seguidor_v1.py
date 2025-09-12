@@ -11,28 +11,27 @@ apagado = False #detiene el ev3 cuando True
 tiempo_inicio = 0
 
 #inicializa las conecciones a los motores y sensores del ev3
-def enciende_ev3():
     #conectamos el push button
 #    boton = TouchSensor()
 #    assert boton.connected
     #conectamos los motores
-    motor_izq = LargeMotor(OUTPUT_D)
+motor_izq = LargeMotor(OUTPUT_D)
     #assert motor_izq.connected
-    motor_der = LargeMotor(OUTPUT_A)
+motor_der = LargeMotor(OUTPUT_A)
     #assert motor_der.connected
     #conectamos los sensores de color
-    ojo_izq = ColorSensor('in3')
+ojo_izq = ColorSensor('in3')
     #assert ojo_izq.connected
-    ojo_med = ColorSensor('in2')
+ojo_med = ColorSensor('in2')
     #assert ojo_med.connected
-    ojo_der = ColorSensor('in1')
+ojo_der = ColorSensor('in1')
     #assert ojo_der.connected
     #cambiamos el modo del sensor de color
-    ojo_izq.mode = 'COL-REFLECT'
-    ojo_der.mode = 'COL-REFLECT'
-    ojo_med.mode = 'COL-REFLECT'
+ojo_izq.mode = 'COL-REFLECT'
+ojo_der.mode = 'COL-REFLECT'
+ojo_med.mode = 'COL-REFLECT'
     #empieza a contar el tiempo de ejecucion
-    tiempo_inicio = time.perf_counter()
+tiempo_inicio = time.perf_counter()
 
 #activa la recoleccion de datos en el recorrido
 def inicia_recolecta():
@@ -101,7 +100,6 @@ def run():
         apagador()
 
 #main
-enciende_ev3()
 inicia_recolecta()
 run()
 termina_recolecta()
