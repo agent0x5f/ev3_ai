@@ -49,7 +49,7 @@ def anota():
 def apagador():
 #    if boton.is_pressed == True:
     apagado = False
-
+    apaga_ev3()
 #termina la recoleccion de datos en el recorrido
 #def termina_recolecta():
  
