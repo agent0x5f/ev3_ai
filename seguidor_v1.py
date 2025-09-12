@@ -12,8 +12,8 @@ apagado = False #detiene el ev3 cuando True
 #inicializa las conecciones a los motores y sensores del ev3
 def enciende_ev3():
     #conectamos el push button
-    boton = TouchSensor()
-    assert boton.connected
+#    boton = TouchSensor()
+#    assert boton.connected
     #conectamos los motores
     motor_izq = LargeMotor(OUTPUT_D)
     assert motor_izq.connected
@@ -48,8 +48,8 @@ def anota():
 
 #apaga el ev3 si se apreta el boton
 def apagador():
-    if boton.is_pressed == True:
-        apagado = True
+#    if boton.is_pressed == True:
+    #    apagado = True
 
 #termina la recoleccion de datos en el recorrido
 def termina_recolecta():
