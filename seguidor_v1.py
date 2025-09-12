@@ -41,8 +41,8 @@ def anota():
     f.write(str(ojo_izq.value()) + "," +
             str(ojo_der.value()) + "," +
             str(ojo_med.value()) + "," +
-            str(motor_izq.speed()) + "," +
-            str(motor_der.speed()) + "\n"
+            str(motor_izq.speed) + "," +
+            str(motor_der.speed) + "\n"
     )
 
 #apaga el ev3 si se apreta el boton
