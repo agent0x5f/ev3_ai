@@ -8,6 +8,7 @@ Genera un csv que contiene los datos de los sensores
 from ev3dev2.auto import *
 from time import perf_counter, sleep
 apagado = False #detiene el ev3 cuando True
+tiempo_inicio = 0
 
 #inicializa las conecciones a los motores y sensores del ev3
 def enciende_ev3():
