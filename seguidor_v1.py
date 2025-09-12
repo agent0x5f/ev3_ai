@@ -6,7 +6,7 @@ Genera un csv que contiene los datos de los sensores
 """
 #Importamos las librerias
 from ev3dev2.auto import *
-from time import *
+from time import perf_counter, sleep
 apagado = False #detiene el ev3 cuando True
 
 #inicializa las conecciones a los motores y sensores del ev3
