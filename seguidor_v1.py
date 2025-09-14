@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Algoritmo para seguidor de linea
-Se detiene cuando llega a la meta o pasa un tiempo determinado
-Genera un csv que contiene los datos de los sensores
+Algoritmo para seguidor de linea con manejo de curvas y pérdida de línea.
+Se detiene cuando llega a la meta, se pierde o pasa un tiempo determinado.
+Genera un csv que contiene los datos de los sensores.
 """
 # Importamos las librerias
 from ev3dev2.auto import *
@@ -25,10 +25,15 @@ tiempo_inicio = perf_counter()
 tiempo_ejecucion = 0
 f = open("data.txt", "w+")
 
-# --- Variables de Velocidad ---
+# --- Variables de Umbrales ("VER") y Velocidad --- 
+VER_NEGRO = 15 #Si el sensor ve esto, esta totalmente en la linea negra
+VER_GRIS = 30
+VER_BLANCO = 45 # Si el sensor lee más que esto, es superficie blanca
+
 VEL_ALTA = 50
 VEL_MEDIA = 30
 VEL_BAJA = 10
+VEL_INVERSA = -10
 
 # --- Funciones ---
 def anota():
@@ -51,34 +56,57 @@ def run():
     while not apagado and tiempo_ejecucion < 10:
         tiempo_ejecucion = perf_counter() - tiempo_inicio
 
+        # Leemos los valores una vez por ciclo para consistencia
+        val_izq = ojo_izq.value()
+        val_der = ojo_der.value()
+        val_med = ojo_med.value()
+
         # 1. ¿Llegó a la meta?
-        if ojo_izq.value() < 10 and ojo_der.value() < 10 and ojo_med.value() < 10:
+        if val_izq < VER_NEGRO and val_der < VER_NEGRO and val_med < VER_NEGRO:
             print("¡Meta alcanzada!")
             apagado = True
             break
 
-        # 2. Correcciones de trayectoria
-        elif ojo_izq.value() < 10:
+        # 2. ¿Curva de 90° a la derecha?
+        elif val_izq < VER_NEGRO and val_med < VER_NEGRO:
+            print("GIRO 90° -> Derecha")
+            motor_izq.run_forever(speed_sp=VEL_ALTA)
+            motor_der.run_forever(speed_sp=VEL_INVERSA)
+
+        # 3. ¿Curva de 90° a la izquierda?
+        elif val_der < VER_NEGRO and val_med < VER_NEGRO:
+            print("GIRO 90° -> Izquierda")
+            motor_izq.run_forever(speed_sp=VEL_INVERSA)
+            motor_der.run_forever(speed_sp=VEL_ALTA)
+
+        # 4. Correcciones de trayectoria normales
+        elif val_izq < VER_NEGRO:
             print("Gira duro a la derecha")
             motor_izq.run_forever(speed_sp=VEL_ALTA)
             motor_der.run_forever(speed_sp=VEL_BAJA)
 
-        elif ojo_der.value() < 10:
+        elif val_der < VER_NEGRO:
             print("Gira duro a la izquierda")
             motor_izq.run_forever(speed_sp=VEL_BAJA)
             motor_der.run_forever(speed_sp=VEL_ALTA)
 
-        elif ojo_izq.value() < 30:
+        elif val_izq < VER_GRIS:
             print("Gira a la derecha")
             motor_izq.run_forever(speed_sp=VEL_ALTA)
             motor_der.run_forever(speed_sp=VEL_MEDIA)
 
-        elif ojo_der.value() < 30:
+        elif val_der < VER_GRIS:
             print("Gira a la izquierda")
             motor_izq.run_forever(speed_sp=VEL_MEDIA)
             motor_der.run_forever(speed_sp=VEL_ALTA)
 
-        # 3. Avanza recto
+        # 5. ¿Se perdió la línea? (Todos los ojos ven blanco)
+        elif val_izq > VER_BLANCO and val_med > VER_BLANCO and val_der > VER_BLANCO:
+            print("¡Línea perdida! Deteniendo robot.")
+            apagado = True
+            break
+
+        # 6. Si todo lo demás falla, avanza recto
         else:
             print("OK")
             motor_izq.run_forever(speed_sp=VEL_ALTA)
