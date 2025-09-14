@@ -7,24 +7,20 @@ Genera un csv que contiene los datos de los sensores
 #Importamos las librerias
 from ev3dev2.auto import *
 from time import perf_counter, sleep
+#variables globales
 apagado = False #detiene el ev3 cuando True
 tiempo_inicio = 0
+tiempo_actual = 0
+tiempo_ejecucion = 0
 f = open("data.txt", "w+")
-#inicializa las conecciones a los motores y sensores del ev3
-    #conectamos el push button
-#    boton = TouchSensor()
-#    assert boton.connected
+
     #conectamos los motores
-motor_izq = LargeMotor(OUTPUT_D)
-    #assert motor_izq.connected
 motor_der = LargeMotor(OUTPUT_A)
-    #assert motor_der.connected
+motor_izq = LargeMotor(OUTPUT_D)
     #conectamos los sensores de color
-ojo_izq = ColorSensor('in3')
-    #assert ojo_izq.connected
-ojo_med = ColorSensor('in2')
-    #assert ojo_med.connected
 ojo_der = ColorSensor('in1')
+ojo_med = ColorSensor('in2')
+ojo_izq = ColorSensor('in3')
     #assert ojo_der.connected
     #cambiamos el modo del sensor de color
 ojo_izq.mode = 'COL-REFLECT'
@@ -33,18 +29,13 @@ ojo_med.mode = 'COL-REFLECT'
     #empieza a contar el tiempo de ejecucion
 tiempo_inicio = time.perf_counter()
 
-#activa la recoleccion de datos en el recorrido
-  
-
-#escribe los datos de este ciclo del loop
+#escribe los datos de este ciclo del loop a file y terminal
 def anota():
     print(str(ojo_izq.value()) + "," +
             str(ojo_med.value()) + "," +
             str(ojo_der.value()) + "," +
             str(motor_izq.speed) + "," +
-            str(motor_der.speed) + "\n"
-    )
-
+            str(motor_der.speed))
 
     f.write(str(ojo_izq.value()) + "," +
             str(ojo_med.value()) + "," +
@@ -56,22 +47,16 @@ def anota():
 #apaga el ev3 si se apreta el boton
 def apagador():
 #    if boton.is_pressed == True:
-    apagado = False
-    apaga_ev3()
-#termina la recoleccion de datos en el recorrido
-#def termina_recolecta():
- 
-#detiene los motores
-def apaga_ev3():
+    print("apagando...")
     motor_izq.stop()
     motor_der.stop()
-#test
+
 #main loop de ejecucion
 def run():
-    #tiempo actual
     tiempo_actual = time.perf_counter()
     #tiempo transcurrido
     tiempo_ejecucion = tiempo_actual-tiempo_inicio
+    print("runtime: " + tiempo_ejecucion)
     #mientras que no se aprete el boton de stop, corre
     while apagado == False or tiempo_ejecucion < 10:
         #muy pasado de izq, ve a la derecha
@@ -96,7 +81,8 @@ def run():
             motor_izq.run_forever(speed_sp = 30)
         #llegó a la meta parale
         elif ojo_izq < 10 and ojo_der < 10 and ojo_med <10:
-            apaga_ev3()
+            apagado = True
+            apagador()
             break
         #esta perfecto siguele    
         else: 
@@ -108,7 +94,8 @@ def run():
         #epoch, atrasa el ciclo para que los motores tengan tiempo de reaccionar
         sleep(0.1)
         #Ya corrió almenos un ciclo, revisa si hay apagado manual
-        apagador()
+        if apagado == True
+          apagador()
 
 #main
 run()
