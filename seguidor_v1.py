@@ -26,9 +26,9 @@ tiempo_ejecucion = 0
 f = open("data.txt", "w+")
 
 # --- Variables de Umbrales ("VER") y Velocidad --- 
-VER_NEGRO = 15 #Si el sensor ve esto, esta totalmente en la linea negra
+VER_NEGRO = 18 #Si el sensor ve esto, esta totalmente en la linea negra
 VER_GRIS = 30
-VER_BLANCO = 45 # Si el sensor lee más que esto, es superficie blanca
+VER_BLANCO = 30 # Si el sensor lee más que esto, es superficie blanca
 
 VEL_ALTA = 50
 VEL_MEDIA = 30
