@@ -25,6 +25,11 @@ tiempo_inicio = perf_counter()
 tiempo_ejecucion = 0
 f = open("data.txt", "w+")
 
+# --- Variables de Velocidad ---
+VEL_ALTA = 50
+VEL_MEDIA = 30
+VEL_BAJA = 10
+
 # --- Funciones ---
 def anota():
     """Escribe los datos de este ciclo en el archivo y la terminal."""
@@ -41,54 +46,51 @@ def apagador():
 
 def run():
     """Bucle principal de ejecución."""
-    # AVISO: Usaremos estas variables globales
     global apagado, tiempo_ejecucion
 
     while not apagado and tiempo_ejecucion < 10:
-        # Actualiza el tiempo transcurrido en cada ciclo
         tiempo_ejecucion = perf_counter() - tiempo_inicio
 
-        # 1. ¿Llegó a la meta? (Máxima prioridad)
+        # 1. ¿Llegó a la meta?
         if ojo_izq.value() < 10 and ojo_der.value() < 10 and ojo_med.value() < 10:
             print("¡Meta alcanzada!")
             apagado = True
-            break  # Sal del bucle inmediatamente
+            break
 
         # 2. Correcciones de trayectoria
         elif ojo_izq.value() < 10:
             print("Gira duro a la derecha")
-            motor_izq.run_forever(speed_sp=50)
-            motor_der.run_forever(speed_sp=10)
+            motor_izq.run_forever(speed_sp=VEL_ALTA)
+            motor_der.run_forever(speed_sp=VEL_BAJA)
 
         elif ojo_der.value() < 10:
             print("Gira duro a la izquierda")
-            motor_izq.run_forever(speed_sp=10)
-            motor_der.run_forever(speed_sp=50)
+            motor_izq.run_forever(speed_sp=VEL_BAJA)
+            motor_der.run_forever(speed_sp=VEL_ALTA)
 
         elif ojo_izq.value() < 30:
             print("Gira a la derecha")
-            motor_izq.run_forever(speed_sp=50)
-            motor_der.run_forever(speed_sp=30)
+            motor_izq.run_forever(speed_sp=VEL_ALTA)
+            motor_der.run_forever(speed_sp=VEL_MEDIA)
 
         elif ojo_der.value() < 30:
             print("Gira a la izquierda")
-            motor_izq.run_forever(speed_sp=30)
-            motor_der.run_forever(speed_sp=50)
+            motor_izq.run_forever(speed_sp=VEL_MEDIA)
+            motor_der.run_forever(speed_sp=VEL_ALTA)
 
-        # 3. Si no hay que corregir, avanza recto
+        # 3. Avanza recto
         else:
             print("OK")
-            motor_izq.run_forever(speed_sp=50)
-            motor_der.run_forever(speed_sp=50)
+            motor_izq.run_forever(speed_sp=VEL_ALTA)
+            motor_der.run_forever(speed_sp=VEL_ALTA)
 
         anota()
         sleep(0.1)
 
 # --- Ejecución Principal ---
 print("Iniciando seguidor de línea...")
-run()  # Ejecuta el bucle principal
+run()
 
-# Al salir del bucle (por tiempo o por meta), se ejecutan estas líneas
 apagador()
 f.close()
 print(f"Programa finalizado. Runtime total: {tiempo_ejecucion:.2f} segundos.")
