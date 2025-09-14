@@ -1,102 +1,94 @@
 #!/usr/bin/env python3
 """
-Algoritmo para segidor de linea
+Algoritmo para seguidor de linea
 Se detiene cuando llega a la meta o pasa un tiempo determinado
 Genera un csv que contiene los datos de los sensores
 """
-#Importamos las librerias
+# Importamos las librerias
 from ev3dev2.auto import *
 from time import perf_counter, sleep
-#variables globales
-apagado = False #detiene el ev3 cuando True
-tiempo_inicio = 0
-tiempo_actual = 0
-tiempo_ejecucion = 0
-f = open("data.txt", "w+")
 
-    #conectamos los motores
+# --- Conexiones y configuración ---
 motor_der = LargeMotor(OUTPUT_A)
 motor_izq = LargeMotor(OUTPUT_D)
-    #conectamos los sensores de color
 ojo_der = ColorSensor('in1')
 ojo_med = ColorSensor('in2')
 ojo_izq = ColorSensor('in3')
-    #assert ojo_der.connected
-    #cambiamos el modo del sensor de color
+
 ojo_izq.mode = 'COL-REFLECT'
 ojo_der.mode = 'COL-REFLECT'
 ojo_med.mode = 'COL-REFLECT'
-    #empieza a contar el tiempo de ejecucion
-tiempo_inicio = time.perf_counter()
 
-#escribe los datos de este ciclo del loop a file y terminal
+# --- Variables Globales ---
+apagado = False
+tiempo_inicio = perf_counter()
+tiempo_ejecucion = 0
+f = open("data.txt", "w+")
+
+# --- Funciones ---
 def anota():
-    print(str(ojo_izq.value()) + "," +
-            str(ojo_med.value()) + "," +
-            str(ojo_der.value()) + "," +
-            str(motor_izq.speed) + "," +
-            str(motor_der.speed))
+    """Escribe los datos de este ciclo en el archivo y la terminal."""
+    datos = (f"{ojo_izq.value()},{ojo_med.value()},{ojo_der.value()},"
+             f"{motor_izq.speed},{motor_der.speed}")
+    print(datos)
+    f.write(datos + "\n")
 
-    f.write(str(ojo_izq.value()) + "," +
-            str(ojo_med.value()) + "," +
-            str(ojo_der.value()) + "," +
-            str(motor_izq.speed) + "," +
-            str(motor_der.speed) + "\n"
-    )
-
-#apaga el ev3 si se apreta el boton
 def apagador():
-#    if boton.is_pressed == True:
-    print("apagando...")
+    """Detiene los motores."""
+    print("Apagando motores...")
     motor_izq.stop()
     motor_der.stop()
 
-#main loop de ejecucion
 def run():
-    tiempo_actual = time.perf_counter()
-    #tiempo transcurrido
-    tiempo_ejecucion = tiempo_actual-tiempo_inicio
-    print("runtime: " + tiempo_ejecucion)
-    #mientras que no se aprete el boton de stop, corre
-    while apagado == False or tiempo_ejecucion < 10:
-        #muy pasado de izq, ve a la derecha
-        if ojo_izq < 10: 
-            print("gira duro a der")
-            motor_der.run_forever(speed_sp = 10)
-            motor_izq.run_forever(speed_sp = 50)
-        #muy pasado de der, ve a la izquierda
-        elif ojo_der < 10: 
-            print("gira duro izq")
-            motor_der.run_forever(speed_sp = 50)
-            motor_izq.run_forever(speed_sp = 10)
-        #un poco pasado de izq, ve a la derecha
-        elif ojo_izq < 30: 
-            print("gira der")
-            motor_der.run_forever(speed_sp = 30)
-            motor_izq.run_forever(speed_sp = 50)
-        #un poco pasado de der, ve a la izquierda
-        elif ojo_der < 10: 
-            print("gira izq")
-            motor_der.run_forever(speed_sp = 50)
-            motor_izq.run_forever(speed_sp = 30)
-        #llegó a la meta parale
-        elif ojo_izq < 10 and ojo_der < 10 and ojo_med <10:
-            apagado = True
-            apagador()
-            break
-        #esta perfecto siguele    
-        else: 
-            print("OK")
-            motor_der.run_forever(speed_sp = 50)
-            motor_izq.run_forever(speed_sp = 50)
-        #ya acabaste un loop cycle, escribe tus datos
-        anota()
-        #epoch, atrasa el ciclo para que los motores tengan tiempo de reaccionar
-        sleep(0.1)
-        #Ya corrió almenos un ciclo, revisa si hay apagado manual
-        if apagado == True
-          apagador()
+    """Bucle principal de ejecución."""
+    # AVISO: Usaremos estas variables globales
+    global apagado, tiempo_ejecucion
 
-#main
-run()
+    while not apagado and tiempo_ejecucion < 10:
+        # Actualiza el tiempo transcurrido en cada ciclo
+        tiempo_ejecucion = perf_counter() - tiempo_inicio
+
+        # 1. ¿Llegó a la meta? (Máxima prioridad)
+        if ojo_izq.value() < 10 and ojo_der.value() < 10 and ojo_med.value() < 10:
+            print("¡Meta alcanzada!")
+            apagado = True
+            break  # Sal del bucle inmediatamente
+
+        # 2. Correcciones de trayectoria
+        elif ojo_izq.value() < 10:
+            print("Gira duro a la derecha")
+            motor_izq.run_forever(speed_sp=50)
+            motor_der.run_forever(speed_sp=10)
+
+        elif ojo_der.value() < 10:
+            print("Gira duro a la izquierda")
+            motor_izq.run_forever(speed_sp=10)
+            motor_der.run_forever(speed_sp=50)
+
+        elif ojo_izq.value() < 30:
+            print("Gira a la derecha")
+            motor_izq.run_forever(speed_sp=50)
+            motor_der.run_forever(speed_sp=30)
+
+        elif ojo_der.value() < 30:
+            print("Gira a la izquierda")
+            motor_izq.run_forever(speed_sp=30)
+            motor_der.run_forever(speed_sp=50)
+
+        # 3. Si no hay que corregir, avanza recto
+        else:
+            print("OK")
+            motor_izq.run_forever(speed_sp=50)
+            motor_der.run_forever(speed_sp=50)
+
+        anota()
+        sleep(0.1)
+
+# --- Ejecución Principal ---
+print("Iniciando seguidor de línea...")
+run()  # Ejecuta el bucle principal
+
+# Al salir del bucle (por tiempo o por meta), se ejecutan estas líneas
+apagador()
 f.close()
+print(f"Programa finalizado. Runtime total: {tiempo_ejecucion:.2f} segundos.")
