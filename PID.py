@@ -48,10 +48,9 @@ VELOCIDAD_BASE = 40 # Velocidad a la que el robot intentará moverse.
 # --- Funciones ---
 def anota(f):
     """Escribe los datos de este ciclo en el archivo y la terminal."""
-    datos = (f"{ojo_izq.value()},{ojo_med.value()},{ojo_der.value()},"
-             f"{motor_izq.speed},{motor_der.speed}")
+    datos = (ojo_izq.value(), ojo_med.value(), ojo_der.value(),motor_izq.speed,motor_der.speed)
     print(datos)
-    f.write(datos + "\n")
+    f.write(str(datos) + "\n")
 
 def apagador():
     """Detiene los motores."""
@@ -118,9 +117,9 @@ def run(f):
         sleep(0.01) # Un ciclo más rápido puede mejorar la respuesta del PID
 
 # --- Ejecución Principal ---
-print("Iniciando seguidor de línea con PID...")
+#print("Iniciando seguidor de línea con PID...")
 with open("data_pid.txt", "w+") as f:
     run(f)
 
 apagador()
-print(f"Programa finalizado. Runtime total: {tiempo_ejecucion:.2f} segundos.")
+#print(f"Programa finalizado. Runtime total: {tiempo_ejecucion:.2f} segundos.")
