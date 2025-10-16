@@ -7,6 +7,7 @@ Sistema de navegación basado en conocimiento previo del terreno y uso de sensor
 # Importamos las librerias
 from ev3dev2.auto import *
 from time import perf_counter, sleep
+import math
 
 
 # --- Conexiones y configuración ---
@@ -87,6 +88,38 @@ giroscopio.mode = 'GYRO-ANG'
 # al llegar a la zona inicial, se procede a buscar una zona de depósito de color identificable conocido.
 #repetir hasta que se acaben los frutos,el tiempo o forzado.
 
+"""Configuración de las ruedas del robot"""
+# 1. Define el diámetro de tu rueda en milímetros
+DIAMETRO_RUEDA_MM = 56  # Cambia este valor según la configuración de la rueda
+# 2. Define la distancia que quieres que el robot recorra en centímetros
+DISTANCIA_A_RECORRER_CM = 30 # Cambia este valor según la necesidad
+# Convertir el diámetro de mm a cm
+diametro_rueda_cm = DIAMETRO_RUEDA_MM / 10
+# Calcular la circunferencia de la rueda en cm, C = π * d
+circunferencia_rueda_cm = diametro_rueda_cm * math.pi
+# Calcular cuántas rotaciones se necesitan
+rotaciones_necesarias = DISTANCIA_A_RECORRER_CM / circunferencia_rueda_cm
+# Convertir las rotaciones a grados para mayor precisión
+grados_necesarios = rotaciones_necesarias * 360
+print(f"Diámetro de la rueda: {diametro_rueda_cm:.2f} cm")
+print(f"Circunferencia: {circunferencia_rueda_cm:.2f} cm")
+print(f"Para recorrer {DISTANCIA_A_RECORRER_CM} cm, se necesitan:")
+print(f"  -> {rotaciones_necesarias:.2f} rotaciones")
+print(f"  -> {grados_necesarios:.2f} grados")
+
+"""
+# --- EJECUCIÓN DEL MOVIMIENTO ---
+# Inicializar el control de los dos motores (B y C son los más comunes)
+# motores = MoveTank(OUTPUT_B, OUTPUT_C)
+# Usar on_for_degrees para el movimiento más preciso
+# Ambos motores se moverán la misma cantidad de grados a la misma velocidad
+# para asegurar que el robot vaya en línea recta.
+
+motores.on_for_degrees(
+    SpeedPercent(30),      # Velocidad (puedes ajustarla)
+    grados_necesarios      # Distancia en grados que calculamos
+)
+"""
 
 class RobotRecolector:
     def __init__(self):
