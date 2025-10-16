@@ -8,6 +8,7 @@ Sistema de navegación basado en conocimiento previo del terreno y uso de sensor
 from ev3dev2.auto import *
 from time import perf_counter, sleep
 
+
 # --- Conexiones y configuración ---
 # usaremos un sensor de linea en cada lado y uno al frente para detectar los limites del cafetal
 # además de los 4 motores para mover la plataforma y el brazo recolector
@@ -160,3 +161,39 @@ class RobotRecolector:
             print(f"Evento: '{evento}' | Transición: {estado_anterior} -> {self.estado_actual}")
         else:
             print(f"Evento '{evento}' ignorado en el estado '{self.estado_actual}'")
+
+
+"""Simulador de eventos para probar el robot. requiere comentar el codigo de los sensores reales y motores.
+# --- Probando el Robot Recolector ---
+
+# 1. Creamos una instancia del robot. Inicia en "ESPERANDO_INICIO".
+robot = RobotRecolector()
+# 2. Simulamos la ejecución con una secuencia de eventos lógicos.
+print("\n--- INICIANDO SIMULACIÓN ---")
+robot.procesar_evento("iniciar_recoleccion")      # Presionamos el botón de inicio
+# Va de camino y se encuentra un "pool" (obstáculo)
+robot.procesar_evento("obstaculo_detectado")
+robot.procesar_evento("obstaculo_superado")       # Lo rodea y sigue su camino
+robot.procesar_evento("llegada_a_cultivo")        # Llega a la zona de árboles
+robot.procesar_evento("grano_encontrado")         # Se alinea con el primer grano
+# El sensor de color lo identifica como verde
+robot.procesar_evento("grano_verde_detectado")    # Lo ignora y vuelve a buscar
+# Encuentra otro grano
+robot.procesar_evento("grano_encontrado")
+# Esta vez es maduro
+robot.procesar_evento("grano_maduro_detectado")
+robot.procesar_evento("recoleccion_exitosa")      # Lo guarda y busca el siguiente
+# Supongamos que ya no caben más granos
+robot.procesar_evento("almacenamiento_lleno")
+robot.procesar_evento("llegada_a_deposito")
+robot.procesar_evento("contenedor_maduro_encontrado")
+robot.procesar_evento("deposito_finalizado")      # Deposita y vuelve por más
+# Finalmente, después de muchos ciclos, ya no hay más granos
+robot.procesar_evento("llegada_a_cultivo")
+robot.procesar_evento("todos_los_arboles_limpios")
+robot.procesar_evento("llegada_a_deposito")
+robot.procesar_evento("todos_los_granos_depositados")
+print(f"\n--- SIMULACIÓN FINALIZADA ---")
+print(f"Estado final del robot: {robot.estado_actual}")
+
+"""
