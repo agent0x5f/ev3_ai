@@ -44,7 +44,11 @@ print(f"Datos de prueba: {len(X_test)} registros\n")
 
 # --- 4. Crear y Entrenar el Modelo KNN ---
 # Elegimos K=5. Este es un hiperparámetro que puedes ajustar.
-k = 5
+#Con k=5, MAE=15.09
+#Con k=9, MAE=14.55
+#Con k=3, MAE=14.62
+#Con k=21, MAE=15.02
+k = 21
 model = KNeighborsRegressor(n_neighbors=k)
 
 # "Entrenamos" el modelo (en KNN, esto es simplemente almacenar los datos).
@@ -74,3 +78,5 @@ velocidades_predichas = model.predict(nuevas_lecturas)
 print("--- Ejemplo de Predicción en Tiempo Real ---")
 print(f"Lectura de sensores (Izq, Med, Der): {nuevas_lecturas[0]}")
 print(f"Velocidad predicha para los motores (Izq, Der): ({int(velocidades_predichas[0][0])}, {int(velocidades_predichas[0][1])})")
+
+#print(full_content)
