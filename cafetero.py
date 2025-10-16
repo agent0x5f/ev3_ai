@@ -71,6 +71,13 @@ VEL_SEGUNDA = 50
 VEL_PRIMERA = 10
 VEL_REVERSA = -50
 
+# definición del problema.
+# requimos de un robot autonomo que se traslade de un punto A hacia un punto B, con A siendo 5 posibles lugares conocidos y
+# B tres lugares posibles. En el camino, se puede encontrar 0, 1, 2 obstaculos en posiciones posibles conocidas.
+# al llegar a un posible punto B, se procede a la identificación y recolección de los frutos.
+# una vez terminado una tanda de recolección se procede a regresar a la zona inicial
+# al llegar a la zona inicial, se procede a buscar una zona de depósito de color identificable conocido.
+#repetir hasta que se acaben los frutos,el tiempo o forzado.
 
 
 def run():
