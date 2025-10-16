@@ -87,9 +87,43 @@ giroscopio.mode = 'GYRO-ANG'
 #repetir hasta que se acaben los frutos,el tiempo o forzado.
 
 
-def run():
-           sleep(0.1)
+class Semaforo:
+    def __init__(self):
+        """
+        Define los estados y las transiciones.
+        El estado inicial será 'rojo'.
+        """
+        self.estados = {"rojo", "verde", "amarillo"}
+        # Las transiciones definen a qué estado pasar desde el estado actual
+        self.transiciones = {
+            "rojo": "verde",
+            "verde": "amarillo",
+            "amarillo": "rojo"
+        }
+        # Establecemos el estado inicial
+        self.estado_actual = "rojo"
+        print(f"El semáforo inicia en: {self.estado_actual}")
 
-# --- Main Loop ---
+    def procesar_evento(self, evento):
+        """
+        Procesa un evento para cambiar de estado.
+        En este caso, el único evento es 'ciclo'.
+        """
+        if evento == "ciclo":
+            # Obtenemos el siguiente estado a partir del estado actual
+            self.estado_actual = self.transiciones[self.estado_actual]
+            print(f"Cambiando a: {self.estado_actual}")
+        else:
+            print(f"Evento '{evento}' no reconocido.")
 
-run()
+# --- Probando la máquina de estados ---
+
+# 1. Creamos una instancia de nuestro semáforo
+mi_semaforo = Semaforo()
+
+# 2. Simulamos los ciclos del semáforo
+mi_semaforo.procesar_evento("ciclo")  # De rojo a verde
+mi_semaforo.procesar_evento("ciclo")  # De verde a amarillo
+mi_semaforo.procesar_evento("ciclo")  # De amarillo a rojo
+mi_semaforo.procesar_evento("otro_evento") # Evento no válido
+mi_semaforo.procesar_evento("ciclo")  # De rojo a verde de nuevo
