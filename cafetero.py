@@ -87,52 +87,76 @@ giroscopio.mode = 'GYRO-ANG'
 #repetir hasta que se acaben los frutos,el tiempo o forzado.
 
 
-class Semaforo:
+class RobotRecolector:
     def __init__(self):
         """
-        Define los estados y las transiciones.
-        El estado inicial será 'Inicio'.
+        Constructor del robot recolector de café.
         """
-        self.estados = {"Inicio","Traslada A->B","Rodea","Posiciona","Identifica","Recolecta","Regresa B->A", "Busca depo","Deposita", "Fin"}
-        # Las transiciones definen a qué estado pasar desde el estado actual
-        self.transiciones = {
-            "Inicio": "Traslada A->B",
-            "Traslada A->B": "Rodea",
-            "Traslada A->B": "Posiciona",
-            "Rodea": "Traslada A->B",
-            "Posiciona": "Identifica",
-            "Identifica": "Recolecta",
-            "Recolecta": "Regresa B->A",
-            "Regresa B->A": "Rodea",
-            "Regresa B->A": "Busca depo",
-            "Busca depo": "Deposita",
-            "Deposita": "Fin",
-            "Fin": "Fin"
+        self.estados = {
+            "ESPERANDO_INICIO", "NAVEGANDO_A_CULTIVO", "EVADIENDO_OBSTACULO",
+            "BUSCANDO_GRANO", "IDENTIFICANDO_GRANO", "RECOLECTANDO",
+            "NAVEGANDO_A_DEPOSITO", "BUSCANDO_CONTENEDOR", "DEPOSITANDO",
+            "COMPLETADO"
         }
-        # Establecemos el estado inicial
-        self.estado_actual = "rojo"
-        print(f"El semáforo inicia en: {self.estado_actual}")
+        
+        self.estado_actual = "ESPERANDO_INICIO"
+        self.granos_recolectados = [] # Para almacenar los granos internamente
+
+        # El CEREBRO del robot: las transiciones dependen del estado ACTUAL y del EVENTO que ocurre.
+        # Estructura: {'estado_origen': {'evento': 'estado_destino'}}
+        self.transiciones = {
+            "ESPERANDO_INICIO": {
+                "iniciar_recoleccion": "NAVEGANDO_A_CULTIVO"
+            },
+            "NAVEGANDO_A_CULTIVO": {
+                "obstaculo_detectado": "EVADIENDO_OBSTACULO",
+                "llegada_a_cultivo": "BUSCANDO_GRANO"
+            },
+            "EVADIENDO_OBSTACULO": {
+                "obstaculo_superado": "NAVEGANDO_A_CULTIVO" # Reanuda la navegación original
+            },
+            "BUSCANDO_GRANO": {
+                "grano_encontrado": "IDENTIFICANDO_GRANO",
+                "arbol_limpio": "NAVEGANDO_A_DEPOSITO", # Si ya no hay más granos que recoger en un árbol
+                "todos_los_arboles_limpios": "NAVEGANDO_A_DEPOSITO" # O si ya revisó todos los árboles
+            },
+            "IDENTIFICANDO_GRANO": {
+                "grano_maduro_detectado": "RECOLECTANDO",
+                "grano_pasado_detectado": "RECOLECTANDO",
+                "grano_verde_detectado": "BUSCANDO_GRANO" # Ignora el verde y busca otro
+            },
+            "RECOLECTANDO": {
+                "recoleccion_exitosa": "BUSCANDO_GRANO", # Busca el siguiente grano en el mismo árbol
+                "almacenamiento_lleno": "NAVEGANDO_A_DEPOSITO" # Si ya no caben más, va a depositar
+            },
+            "NAVEGANDO_A_DEPOSITO": {
+                "obstaculo_detectado": "EVADIENDO_OBSTACULO_DE_REGRESO", # Podríamos necesitar un estado de evasión diferente para el regreso
+                "llegada_a_deposito": "BUSCANDO_CONTENEDOR"
+            },
+            "EVADIENDO_OBSTACULO_DE_REGRESO":{
+                "obstaculo_superado": "NAVEGANDO_A_DEPOSITO"
+            },
+            "BUSCANDO_CONTENEDOR": {
+                "contenedor_maduro_encontrado": "DEPOSITANDO",
+                "contenedor_pasado_encontrado": "DEPOSITANDO"
+            },
+            "DEPOSITANDO": {
+                "deposito_finalizado": "NAVEGANDO_A_CULTIVO", # Vuelve por más granos
+                "todos_los_granos_depositados": "COMPLETADO" # Si ya no hay más granos en el campo
+            },
+            "COMPLETADO": {
+                # Estado final, no hay transiciones de salida
+            }
+        }
+        print(f"Robot listo en estado: {self.estado_actual}")
 
     def procesar_evento(self, evento):
         """
-        Procesa un evento para cambiar de estado.
-        En este caso, el único evento es 'ciclo'.
+        Procesa un evento y cambia el estado del robot si la transición es válida.
         """
-        if evento == "ciclo":
-            # Obtenemos el siguiente estado a partir del estado actual
-            self.estado_actual = self.transiciones[self.estado_actual]
-            print(f"Cambiando a: {self.estado_actual}")
+        if self.estado_actual in self.transiciones and evento in self.transiciones[self.estado_actual]:
+            estado_anterior = self.estado_actual
+            self.estado_actual = self.transiciones[self.estado_actual][evento]
+            print(f"Evento: '{evento}' | Transición: {estado_anterior} -> {self.estado_actual}")
         else:
-            print(f"Evento '{evento}' no reconocido.")
-
-# --- Probando la máquina de estados ---
-
-# 1. Creamos una instancia de nuestro semáforo
-mi_semaforo = Semaforo()
-
-# 2. Simulamos los ciclos del semáforo
-mi_semaforo.procesar_evento("ciclo")  # De rojo a verde
-mi_semaforo.procesar_evento("ciclo")  # De verde a amarillo
-mi_semaforo.procesar_evento("ciclo")  # De amarillo a rojo
-mi_semaforo.procesar_evento("otro_evento") # Evento no válido
-mi_semaforo.procesar_evento("ciclo")  # De rojo a verde de nuevo
+            print(f"Evento '{evento}' ignorado en el estado '{self.estado_actual}'")
