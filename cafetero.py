@@ -221,3 +221,49 @@ Evento 'todos_los_granos_depositados' ignorado en el estado 'BUSCANDO_CONTENEDOR
 --- SIMULACIÓN FINALIZADA ---
 Estado final del robot: BUSCANDO_CONTENEDOR
 """
+
+# --- Constantes de configuración ---
+VELOCIDAD_CRUCERO = 50  # Velocidad de los motores (ej. de 0 a 100)
+UMBRAL_OBSTACULO_CM = 10 # Distancia para considerar un obstáculo
+COLOR_LINEA = "NEGRO"
+# --- Función que define el comportamiento del estado ---
+def ejecutar_estado_navegando_a_cultivo():
+    """
+    Esta función contiene la lógica que se ejecuta
+    cuando el robot está en el estado NAVEGANDO_A_CULTIVO.
+    """
+    # Acción principal: Moverse hacia adelante
+    motor_1.avanzar(VELOCIDAD_CRUCERO)
+    motor_2.avanzar(VELOCIDAD_CRUCERO)
+    print("Acción: Avanzando hacia la zona de cultivo...")
+
+    # Bucle de supervisión: se ejecuta muy rápido mientras los motores andan
+    while True:
+        # 1. Revisar si hay un obstáculo (el "pool")
+        distancia_actual = ojo_ultra.distance_centimeters()
+        if distancia_actual < UMBRAL_OBSTACULO_CM:
+            print(f"¡EVENTO! Obstáculo detectado a {distancia_actual} cm.")
+            motor_1.stop()
+            motor_2.stop()
+            RobotRecolector.procesar_evento("obstaculo_detectado")
+            break # Salir del bucle porque ya cambiamos de estado
+
+        # 2. Revisar si llegamos a la línea de la zona de cultivo
+        color_suelo = ojo_frente.color_name()
+        if color_suelo == COLOR_LINEA:
+            print("¡EVENTO! Línea de zona de cultivo detectada.")
+            motor_1.stop()
+            motor_2.stop()
+            RobotRecolector.procesar_evento("llegada_a_cultivo")
+            break # Salir del bucle porque ya cambiamos de estado
+        
+        # Una pequeña pausa para no saturar el procesador
+        time.sleep(0.01)
+
+# --- En en main ---
+while True:
+    if RobotRecolector.estado_actual == "NAVEGANDO_A_CULTIVO":
+        ejecutar_estado_navegando_a_cultivo()
+    #elif RobotRecolector.estado_actual == "EVADIENDO_OBSTACULO":
+        #ejecutar_estado_evadiendo()
+# ... etc para todos los demás estados
