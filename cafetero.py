@@ -197,3 +197,27 @@ print(f"\n--- SIMULACIÓN FINALIZADA ---")
 print(f"Estado final del robot: {robot.estado_actual}")
 
 """
+
+"""Ejemplo de la simulación:
+--- INICIANDO SIMULACIÓN ---
+Evento: 'iniciar_recoleccion' | Transición: ESPERANDO_INICIO -> NAVEGANDO_A_CULTIVO
+Evento: 'obstaculo_detectado' | Transición: NAVEGANDO_A_CULTIVO -> EVADIENDO_OBSTACULO
+Evento: 'obstaculo_superado' | Transición: EVADIENDO_OBSTACULO -> NAVEGANDO_A_CULTIVO
+Evento: 'llegada_a_cultivo' | Transición: NAVEGANDO_A_CULTIVO -> BUSCANDO_GRANO
+Evento: 'grano_encontrado' | Transición: BUSCANDO_GRANO -> IDENTIFICANDO_GRANO
+Evento: 'grano_verde_detectado' | Transición: IDENTIFICANDO_GRANO -> BUSCANDO_GRANO
+Evento: 'grano_encontrado' | Transición: BUSCANDO_GRANO -> IDENTIFICANDO_GRANO
+Evento: 'grano_maduro_detectado' | Transición: IDENTIFICANDO_GRANO -> RECOLECTANDO
+Evento: 'recoleccion_exitosa' | Transición: RECOLECTANDO -> BUSCANDO_GRANO
+Evento 'almacenamiento_lleno' ignorado en el estado 'BUSCANDO_GRANO'
+Evento 'llegada_a_deposito' ignorado en el estado 'BUSCANDO_GRANO'
+Evento 'contenedor_maduro_encontrado' ignorado en el estado 'BUSCANDO_GRANO'
+Evento 'deposito_finalizado' ignorado en el estado 'BUSCANDO_GRANO'
+Evento 'llegada_a_cultivo' ignorado en el estado 'BUSCANDO_GRANO'
+Evento: 'todos_los_arboles_limpios' | Transición: BUSCANDO_GRANO -> NAVEGANDO_A_DEPOSITO
+Evento: 'llegada_a_deposito' | Transición: NAVEGANDO_A_DEPOSITO -> BUSCANDO_CONTENEDOR
+Evento 'todos_los_granos_depositados' ignorado en el estado 'BUSCANDO_CONTENEDOR'
+
+--- SIMULACIÓN FINALIZADA ---
+Estado final del robot: BUSCANDO_CONTENEDOR
+"""
