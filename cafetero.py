@@ -21,7 +21,8 @@ from time import perf_counter, sleep
 motor_1 = LargeMotor(OUTPUT_A)
 motor_2 = LargeMotor(OUTPUT_B)
 # motores del brazo recolector, ya que el ev3 solo tiene 4 puertos de motor, usaremos un motor para subir y bajar el brazo
-# y otro para abrir y cerrar la garra
+# y otro para abrir y cerrar la garra, no tenemos más puertos, por lo que el brazo no se moverá lateralmente.
+# para ello, el robot deberá posicionarse correctamente frente al fruto.
 
 #motor_3 = LargeMotor(OUTPUT_C)
 #motor_4 = LargeMotor(OUTPUT_D)
@@ -31,9 +32,9 @@ motor_2 = LargeMotor(OUTPUT_B)
 ojo_frente = ColorSensor('in1')
 #ojo_izq = ColorSensor('in3')
 #sensor ultrasónico
-ojo_ultra = UltrasonicSensor('in3')
+ojo_ultra = UltrasonicSensor('in2')
 #sensor de color para detectar el color del café, montado en la garra
-ojo_color = ColorSensor('in4')
+ojo_color = ColorSensor('in3')
 #configuramos los sensores de línea para que usen el modo de reflejo de color
 #ojo_izq.mode = 'COL-REFLECT'
 #ojo_der.mode = 'COL-REFLECT'
@@ -45,14 +46,14 @@ ojo_ultra.mode = 'US-DIST-CM'
 ojo_color.mode = 'COL-COLOR'
 #color  -> Color detected by the sensor, categorized by overall value.
 #0: No color
-#1: Black
-#2: Blue
-#3: Green
-#4: Yellow
-#5: Red
+#1: Black -overripe
+#2: Blue -overripe
+#3: Green -green
+#4: Yellow -ripe
+#5: Red -ripe
 #6: White
-#7: Brown
-# si requiero detectar el color del café, puedo usar los valores de: raw
+#7: Brown //podria usarse para naranja? que es un -ripe.
+# si requiero detectar el color del café naranja, puedo usar los valores de: raw
 # Red, green, and blue components of the detected color, as a tuple.
 # Officially in the range 0-1020 but the values returned will never be that high. 
 # We do not yet know why the values returned are low, 
@@ -70,6 +71,12 @@ VEL_TERCERA = 80
 VEL_SEGUNDA = 50
 VEL_PRIMERA = 10
 VEL_REVERSA = -50
+# podemos usar el giroscopio para girar grados especificos.
+# turn_right(speed, degrees, brake=True, error_margin=2, sleep_time=0.01)
+# Rotate clockwise degrees in place
+# el giroscopio nos da: MODE_GYRO_ANG = 'GYRO-ANG' Angle(grados)
+giroscopio = GyroSensor('in4')
+giroscopio.mode = 'GYRO-ANG'
 
 # definición del problema.
 # requimos de un robot autonomo que se traslade de un punto A hacia un punto B, con A siendo 5 posibles lugares conocidos y
