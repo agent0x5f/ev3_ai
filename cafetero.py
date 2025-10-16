@@ -91,14 +91,23 @@ class Semaforo:
     def __init__(self):
         """
         Define los estados y las transiciones.
-        El estado inicial será 'rojo'.
+        El estado inicial será 'Inicio'.
         """
-        self.estados = {"rojo", "verde", "amarillo"}
+        self.estados = {"Inicio","Traslada A->B","Rodea","Posiciona","Identifica","Recolecta","Regresa B->A", "Busca depo","Deposita", "Fin"}
         # Las transiciones definen a qué estado pasar desde el estado actual
         self.transiciones = {
-            "rojo": "verde",
-            "verde": "amarillo",
-            "amarillo": "rojo"
+            "Inicio": "Traslada A->B",
+            "Traslada A->B": "Rodea",
+            "Traslada A->B": "Posiciona",
+            "Rodea": "Traslada A->B",
+            "Posiciona": "Identifica",
+            "Identifica": "Recolecta",
+            "Recolecta": "Regresa B->A",
+            "Regresa B->A": "Rodea",
+            "Regresa B->A": "Busca depo",
+            "Busca depo": "Deposita",
+            "Deposita": "Fin",
+            "Fin": "Fin"
         }
         # Establecemos el estado inicial
         self.estado_actual = "rojo"
