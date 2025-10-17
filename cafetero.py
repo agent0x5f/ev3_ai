@@ -21,7 +21,7 @@ import math
 
 #motores de movimiento
 motor_1 = LargeMotor(OUTPUT_A)
-motor_2 = LargeMotor(OUTPUT_B)
+motor_2 = LargeMotor(OUTPUT_D)
 # motores del brazo recolector, ya que el ev3 solo tiene 4 puertos de motor, usaremos un motor para subir y bajar el brazo
 # y otro para abrir y cerrar la garra, no tenemos más puertos, por lo que el brazo no se moverá lateralmente.
 # para ello, el robot deberá posicionarse correctamente frente al fruto.
@@ -101,11 +101,12 @@ circunferencia_rueda_cm = diametro_rueda_cm * math.pi
 rotaciones_necesarias = DISTANCIA_A_RECORRER_CM / circunferencia_rueda_cm
 # Convertir las rotaciones a grados para mayor precisión
 grados_necesarios = rotaciones_necesarias * 360
-print(f"Diámetro de la rueda: {diametro_rueda_cm:.2f} cm")
-print(f"Circunferencia: {circunferencia_rueda_cm:.2f} cm")
-print(f"Para recorrer {DISTANCIA_A_RECORRER_CM} cm, se necesitan:")
-print(f"  -> {rotaciones_necesarias:.2f} rotaciones")
-print(f"  -> {grados_necesarios:.2f} grados")
+
+print("Diámetro de la rueda: %.2f cm" % diametro_rueda_cm)
+print("Circunferencia: %.2f cm" % circunferencia_rueda_cm)
+print("Para recorrer %d cm, se necesitan:" % DISTANCIA_A_RECORRER_CM)
+print("  -> %.2f rotaciones" % rotaciones_necesarias)
+print("  -> %.2f grados" % grados_necesarios)
 
 """
 # --- EJECUCIÓN DEL MOVIMIENTO ---
@@ -182,7 +183,7 @@ class RobotRecolector:
                 # Estado final, no hay transiciones de salida
             }
         }
-        print(f"Robot listo en estado: {self.estado_actual}")
+        print("Robot listo en estado: {self.estado_actual}")
 
     def procesar_evento(self, evento):
         """
@@ -191,9 +192,9 @@ class RobotRecolector:
         if self.estado_actual in self.transiciones and evento in self.transiciones[self.estado_actual]:
             estado_anterior = self.estado_actual
             self.estado_actual = self.transiciones[self.estado_actual][evento]
-            print(f"Evento: '{evento}' | Transición: {estado_anterior} -> {self.estado_actual}")
-        else:
-            print(f"Evento '{evento}' ignorado en el estado '{self.estado_actual}'")
+       #     print(f"Evento: '{evento}' | Transición: {estado_anterior} -> {self.estado_actual}")
+       # else:
+        #    print(f"Evento '{evento}' ignorado en el estado '{self.estado_actual}'")
 
 
 """Simulador de eventos para probar el robot. requiere comentar el codigo de los sensores reales y motores.
@@ -275,7 +276,7 @@ def ejecutar_estado_navegando_a_cultivo():
         # 1. Revisar si hay un obstáculo (el "pool")
         distancia_actual = ojo_ultra.distance_centimeters()
         if distancia_actual < UMBRAL_OBSTACULO_CM:
-            print(f"¡EVENTO! Obstáculo detectado a {distancia_actual} cm.")
+            print("¡EVENTO! Obstáculo detectado a {distancia_actual} cm.")
             motor_1.stop()
             motor_2.stop()
             RobotRecolector.procesar_evento("obstaculo_detectado")
